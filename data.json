@@ -1,0 +1,49 @@
+{
+  "stationId": "MS-LVIV",
+  "date": "2026-09-07",
+  "location": {
+    "latitude": 49.8397,
+    "longitude": 24.0297,
+    "siteName": "Station Alphat"
+  },
+  "sensors": [
+    {
+      "sensorId": "SENS-TEMP",
+      "sensorType": "temperature",
+      "unit": "°C",
+      "readings": [
+        {
+          "timestamp": "06:00:00",
+          "value": 14.2
+        },
+        {
+          "timestamp": "12:00:00",
+          "value": 22.5
+        },
+        {
+          "timestamp": "18:00:00",
+          "value": null
+        }
+      ]
+    },
+    {
+      "sensorId": "SENS-HUM",
+      "sensorType": "humidity",
+      "unit": "%",
+      "readings": [
+        {
+          "timestamp": "06:00:00",
+          "value": 85.0
+        },
+        {
+          "timestamp": "12:00:00",
+          "value": 58.3
+        },
+        {
+          "timestamp": "18:00:00",
+          "value": 62.1
+        }
+      ]
+    }
+  ]
+}
