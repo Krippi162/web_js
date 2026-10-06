@@ -32,3 +32,23 @@ function readData(filePath) {
     process.exit(1);
   }
 }
+
+program
+  .command('list')
+  .description('Показати список усіх датчиків метеостанції')
+  .action(() => { 
+    // Отримуємо шлях до файлу з глобальних опцій програми
+    const filePath = program.opts().input;
+    const data = readData(filePath);
+    
+    // Виводимо загальну інформацію про станцію
+    console.log(`Станція: ${data.stationId} | Дата: ${data.date}`);
+    console.log('--- Доступні датчики ---');
+
+    // Перебираємо масив датчиків і виводимо лише найголовніше (ID та тип)
+    data.sensors.forEach((sensor, index) => {
+      console.log(`${index + 1}. ID: ${sensor.sensorId} | Тип: ${sensor.sensorType}`);
+    });
+  });
+
+program.parse(process.argv);
