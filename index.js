@@ -51,4 +51,20 @@ program
     });
   });
 
+  program
+  .command('sensor <id>') // <id> означає обов'язковий аргумент, який введе користувач
+  .description('Отримати повну інформацію про датчик за його ID')
+  .action((id) => { // Значення <id> потрапляє сюди як параметр функції
+    const data = readData(program.opts().input);
+    const sensor = data.sensors.find(s => s.sensorId === id); // Шукаємо в масиві датчик, у якого поле sensorId збігається з введеним id
+    
+    // Якщо датчик не знайдено, виводимо помилку та зупиняємо програму
+    if (!sensor) {
+      console.error(`Помилка: Датчик з ID "${id}" не знайдено.`);
+      process.exit(1);
+    }
+    
+    console.log(sensor); // Виводимо знайдений об'єкт повністю
+  });
+
 program.parse(process.argv);
