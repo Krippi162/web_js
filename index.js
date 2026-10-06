@@ -127,4 +127,36 @@ program
     if (!hasErrors) console.log('Усі датчики працюють справно, пропущених даних немає.'); // Якщо після перевірки всіх датчиків прапорець залишився false, виводимо позитивне повідомлення.
   });
 
+  // Знаходження максимального показника датчика
+program
+  .command('max <id>')
+  .description('Знайти максимальне зафіксоване значення для вказаного датчика')
+  .action((id) => {
+    const data = readData(program.opts().input);
+    const sensor = data.sensors.find(s => s.sensorId === id);
+    
+    if (!sensor) {
+      console.error(`Помилка: Датчик "${id}" не знайдено.`);
+      process.exit(1);
+    }
+
+    // filter() відкидає всі записи, де value є null
+    // map() бере відфільтрований масив об'єктів і перетворює його на масив звичайних чисел.
+    const validValues = sensor.readings
+      .filter(r => r.value !== null)
+      .map(r => r.value);
+    
+    // Якщо всі дані були null, масив validValues буде порожнім. Перевіряємо це.
+    if (validValues.length === 0) {
+      return console.log('Немає валідних показників для аналізу.');
+    }
+
+    // Math.max() не вміє працювати з масивами напряму, він приймає числа через кому.
+    // Оператор розширення "..." розпаковує масив validValues.
+    // Тобто Math.max(...[14.2, 22.5]) перетворюється на Math.max(14.2, 22.5).
+    const maxValue = Math.max(...validValues);
+    
+    console.log(`Максимальне значення ${sensor.sensorType}: ${maxValue}${sensor.unit}`);
+  });
+
 program.parse(process.argv);
