@@ -89,4 +89,42 @@ program
     console.table(sensor.readings); // console.table гарно виводить масиви
   });
 
+  // Дані про локацію
+program
+  .command('location')
+  .description('Показати координати та назву локації метеостанції')
+  .action(() => {
+    const data = readData(program.opts().input);
+
+    // У моєму JSON поле location не є масивом, це просто об'єкт.
+    // Тому ми можемо звертатися до його властивостей безпосередньо через крапку.
+    console.log(`Локація: ${data.location.siteName}`);
+    console.log(`Широта: ${data.location.latitude}`);
+    console.log(`Довгота: ${data.location.longitude}`);
+  });
+
+  // Пошук пропущених значень (null)
+program
+  .command('errors')
+  .description('Знайти всі показники зі значенням null')
+  .action(() => {
+    const data = readData(program.opts().input);
+    let hasErrors = false; // Створюємо логічний прапорець. Він зміниться на true, якщо ми знайдемо хоча б одну помилку.
+
+    // Метод forEach() виконує функцію для кожного елемента масиву sensors.
+    data.sensors.forEach(sensor => {
+        // Метод filter() створює новий масив, у який потрапляють лише ті елементи readings, 
+        // умова для яких (r.value === null) є істинною.
+      const badReadings = sensor.readings.filter(r => r.value === null);
+      // Якщо довжина відфільтрованого масиву більша за 0, значить помилки є.
+      if (badReadings.length > 0) {
+        hasErrors = true;
+        console.log(`Увага! Датчик ${sensor.sensorId} має пропущені дані о:`);
+        badReadings.forEach(br => console.log(` - ${br.timestamp}`)); // Виводимо час кожної знайденої помилки.
+      }
+    });
+
+    if (!hasErrors) console.log('Усі датчики працюють справно, пропущених даних немає.'); // Якщо після перевірки всіх датчиків прапорець залишився false, виводимо позитивне повідомлення.
+  });
+
 program.parse(process.argv);
