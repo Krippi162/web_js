@@ -33,6 +33,7 @@ function readData(filePath) {
   }
 }
 
+//Виведення списку
 program
   .command('list')
   .description('Показати список усіх датчиків метеостанції')
@@ -51,6 +52,7 @@ program
     });
   });
 
+  //Пошук за ідентифікатором
   program
   .command('sensor <id>') // <id> означає обов'язковий аргумент, який введе користувач
   .description('Отримати повну інформацію про датчик за його ID')
@@ -65,6 +67,26 @@ program
     }
     
     console.log(sensor); // Виводимо знайдений об'єкт повністю
+  });
+
+  //Виведення вкладеного поля
+  program
+  .command('readings <id>')
+  .description('Отримати лише показники (readings) вказаного датчика')
+  .action((id) => {
+    const data = readData(program.opts().input); // Зчитуємо весь JSON-файл за шляхом, вказаним у глобальних опціях
+   
+    // Метод find() проходить по масиву sensors і повертає перший об'єкт, 
+    // у якого значення поля sensorId збігається з переданим id.
+    const sensor = data.sensors.find(s => s.sensorId === id);
+    
+    if (!sensor) {
+      console.error(`Помилка: Датчик з ID "${id}" не знайдено.`);
+      process.exit(1);
+    }
+    
+    console.log(`Показники для ${id} (${sensor.unit}):`);
+    console.table(sensor.readings); // console.table гарно виводить масиви
   });
 
 program.parse(process.argv);
